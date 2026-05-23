@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLE Architect & Mapper - Diseñado por Javier Trigoso</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: DM Sans & Merriweather -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // PALETA DE MARCA PERSONAL DE JAVIER TRIGOSO (JT)
+                        jtGold: '#c0a05a',       // Ocre/Dorado elegante de la marca JT
+                        jtGoldDark: '#9e8043',   // Ocre más profundo para acentos
+                        jtDark: '#2c3539',       // Pizarra Oscuro / Antracita de fondo y texto
+                        jtCream: '#f4f0e1',      // Fondo crema claro y cálido
+                        jtSlate: '#4f5d65',      // Pizarra medio para estados secundarios
+                        udeaBlue: '#2c3539',     // Adaptado a la marca JT
+                        udeaMint: '#c0a05a',     // Adaptado al dorado de JT
+                        udeaCream: '#f4f0e1',    // Adaptado al crema de JT
+                        udeaDark: '#2c3539',     // Adaptado al pizarra de JT
+                        udeaPurple: '#8a7343',   // Variación de dorado oscuro
+                    },
+                    fontFamily: {
+                        sans: ['DM Sans', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #a88a4c;
+        }
+        
+        /* ESTILOS DE IMPRESIÓN RIGUROSOS PARA PDF A4 */
+        @media print {
+            body {
+                background-color: #fff !important;
+                color: #000 !important;
+                font-size: 12px;
+            }
+            header, footer, aside, .no-print, button {
+                display: none !important;
+            }
+            main {
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .step-panel {
+                display: block !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .print-page {
+                width: 210mm !important;
+                height: 297mm !important;
+                padding: 20mm !important;
+                margin: 0 auto !important;
+                page-break-after: always !important;
+                box-shadow: none !important;
+                border: none !important;
+                background: #fff !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
+            }
+            #stepPanel-4 {
+                display: block !important;
+            }
+            #stepPanel-1, #stepPanel-2, #stepPanel-3 {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#faf8f2] font-sans text-jtDark min-h-screen flex flex-col">
+
+    <!-- HEADER INSTITUCIONAL ADAPTADO A LA IDENTIDAD JT -->
+    <header class="bg-jtDark text-[#f4f0e1] border-b-4 border-jtGold shadow-md no-print">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <!-- LOGO JT PERSONALIZADO -->
+                <div class="bg-jtGold text-jtDark font-bold px-3 py-1.5 rounded-lg text-2xl tracking-wider shadow font-serif flex items-center justify-center">
+                    JT
+                </div>
+                <div>
+                    <h1 class="font-serif font-bold text-xl tracking-wide text-jtCream">Escuela de Posgrado UDEA</h1>
+                    <p class="text-xs text-jtGold font-semibold tracking-widest uppercase">Competencias Digitales Universitarias</p>
+                </div>
+            </div>
+            <div class="text-center sm:text-right">
+                <span class="bg-jtGold/20 text-jtGold border border-jtGold/30 px-3 py-1 rounded-full text-xs font-bold">
+                    Semana 3: Red Personal de Aprendizaje (PLE/PLN)
+                </span>
+                <p class="text-xs text-slate-300 mt-1">PLE Architect & Mapper v2</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP WRAPPER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
+        
+        <!-- SIDEBAR DE CONTROL & NAVEGACIÓN -->
+        <aside class="w-full lg:w-80 flex flex-col gap-4 shrink-0 no-print">
+            <!-- Pasos del Asistente -->
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
+                <h3 class="font-serif font-bold text-jtDark text-lg mb-4 pb-2 border-b border-jtCream">Diseñador de PLE</h3>
+                <nav class="flex flex-col gap-2">
+                    <button onclick="switchStep(1)" id="stepBtn-1" class="step-btn flex items-center gap-3 w-full p-3 rounded-lg text-left font-semibold text-sm transition-all bg-jtDark text-white shadow-sm">
+                        <span class="w-6 h-6 rounded-full bg-jtGold text-jtDark flex items-center justify-center font-bold text-xs shrink-0">1</span>
+                        <span>Datos de Portada</span>
+                    </button>
+                    <button onclick="switchStep(2)" id="stepBtn-2" class="step-btn flex items-center gap-3 w-full p-3 rounded-lg text-left font-semibold text-sm transition-all text-slate-600 hover:bg-slate-50">
+                        <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-xs shrink-0">2</span>
+                        <span>Mapeo del PLE</span>
+                    </button>
+                    <button onclick="switchStep(3)" id="stepBtn-3" class="step-btn flex items-center gap-3 w-full p-3 rounded-lg text-left font-semibold text-sm transition-all text-slate-600 hover:bg-slate-50">
+                        <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-xs shrink-0">3</span>
+                        <span>Reflexión Crítica</span>
+                    </button>
+                    <button onclick="switchStep(4)" id="stepBtn-4" class="step-btn flex items-center gap-3 w-full p-3 rounded-lg text-left font-semibold text-sm transition-all text-slate-600 hover:bg-slate-50">
+                        <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-xs shrink-0">4</span>
+                        <span>Exportar Entregable</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Indicador de Progreso del Ecosistema -->
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
+                <h4 class="font-serif font-bold text-jtDark text-sm mb-3">Requisito Obligatorio</h4>
+                <div class="flex justify-between text-xs font-bold text-slate-500 mb-1">
+                    <span>Herramientas Mapeadas</span>
+                    <span id="toolCountLabel">0 / 40</span>
+                </div>
+                <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden mb-3 border">
+                    <div id="progressBar" class="bg-jtGold h-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <div id="progressBadge" class="bg-amber-50 text-amber-700 border border-amber-200 px-3 py-2 rounded-lg text-xs font-medium text-center">
+                    <i class="fa-solid fa-triangle-exclamation mr-1"></i> Requiere mínimo 30 herramientas.
+                </div>
+            </div>
+
+            <!-- Selector de Estética / Identidad Visual -->
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
+                <h4 class="font-serif font-bold text-jtDark text-sm mb-3"><i class="fa-solid fa-palette text-jtGold mr-1.5"></i> Identidad Visual</h4>
+                <div class="flex flex-col gap-3">
+                    <!-- Tema Cromático -->
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Tema del Mapa</span>
+                        <select id="themeSelector" class="border rounded px-2 py-1 text-xs focus:outline-jtDark" onchange="renderMindMap()">
+                            <option value="classic">Andino (Dorado & Pizarra)</option>
+                            <option value="sunset">Sunset (Ocre & Púrpura)</option>
+                            <option value="forest">Forest (Esmeralda & Oro)</option>
+                            <option value="slate">Slate (Monocromo Elegante)</option>
+                        </select>
+                    </div>
+                    <!-- Avatar Central -->
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Avatar de Nodo Central</span>
+                        <div class="grid grid-cols-4 gap-2 mt-1">
+                            <button onclick="setAvatar('professor')" class="avatar-btn border rounded p-1.5 text-center text-slate-600 hover:bg-[#f4f0e1] focus:border-jtGold border-jtGold bg-[#f4f0e1]" id="avatar-professor">
+                                <i class="fa-solid fa-user-tie text-lg"></i>
+                            </button>
+                            <button onclick="setAvatar('researcher')" class="avatar-btn border rounded p-1.5 text-center text-slate-600 hover:bg-[#f4f0e1] focus:border-jtGold" id="avatar-researcher">
+                                <i class="fa-solid fa-graduation-cap text-lg"></i>
+                            </button>
+                            <button onclick="setAvatar('laptop')" class="avatar-btn border rounded p-1.5 text-center text-slate-600 hover:bg-[#f4f0e1] focus:border-jtGold" id="avatar-laptop">
+                                <i class="fa-solid fa-laptop-code text-lg"></i>
+                            </button>
+                            <button onclick="setAvatar('book')" class="avatar-btn border rounded p-1.5 text-center text-slate-600 hover:bg-[#f4f0e1] focus:border-jtGold" id="avatar-book">
+                                <i class="fa-solid fa-book-atlas text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Marco Teórico de Respaldo -->
+            <div class="bg-[#f4f0e1]/40 rounded-xl p-5 border border-jtGold/20">
+                <h4 class="font-serif font-bold text-jtDark text-xs tracking-wider uppercase mb-2">
+                    <i class="fa-solid fa-bookmark text-jtGold mr-1"></i> Referencia Académica
+                </h4>
+                <p class="text-xs text-slate-600 leading-relaxed italic">
+                    "La anatomía del PLE se estructura bajo el acceso (Leer), la reflexión activa (Hacer) y las redes de interacción que construyen conocimiento (Compartir/PLN)."
+                </p>
+                <p class="text-[10px] text-slate-400 mt-2 font-semibold">Castañeda & Adell (2013), Cap. 1</p>
+            </div>
+        </aside>
+
+        <!-- PANELES DE CONTENIDO (PASO A PASO) -->
+        <section class="flex-grow flex flex-col gap-6">
+            
+            <!-- PASO 1: DATOS GENERALES (PORTADA) -->
+            <div id="stepPanel-1" class="step-panel bg-white rounded-xl p-6 shadow-sm border border-slate-200 flex flex-col gap-6 no-print">
+                <div>
+                    <h2 class="font-serif font-bold text-jtDark text-2xl mb-1">Datos de Identificación de la Tarea</h2>
+                    <p class="text-sm text-slate-500">Esta información se cargará de manera automática en la Carátula Académica obligatoria (Página 1) de su entregable.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs font-bold text-slate-600 uppercase">Nombre Completo del Estudiante</label>
+                        <input type="text" id="inputName" placeholder="Ej. Mg. Carmen Rosa Flores" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-jtGold" oninput="saveProfile()">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs font-bold text-slate-600 uppercase">Institución de Posgrado</label>
+                        <input type="text" id="inputInstitution" value="Universidad para el Desarrollo Andino" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-jtGold" oninput="saveProfile()">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs font-bold text-slate-600 uppercase">Programa de Posgrado</label>
+                        <input type="text" id="inputProgram" value="Maestría en Educación con Mención en Docencia Universitaria" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-jtGold" oninput="saveProfile()">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs font-bold text-slate-600 uppercase">Asignatura</label>
+                        <input type="text" id="inputCourse" value="Competencias Digitales para la Docencia Universitaria" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-jtGold" oninput="saveProfile()">
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-4">
+                    <button onclick="switchStep(2)" class="bg-jtDark hover:bg-slate-700 text-white font-bold text-sm px-5 py-2.5 rounded-lg shadow transition-all flex items-center gap-2">
+                        Siguiente paso: Mapear PLE <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PASO 2: MAPEO INTERACTIVO DEL PLE -->
+            <div id="stepPanel-2" class="step-panel hidden bg-white rounded-xl p-6 shadow-sm border border-slate-200 flex flex-col gap-6 no-print">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="font-serif font-bold text-jtDark text-2xl mb-1">Mapeo del Ecosistema PLE</h2>
+                        <p class="text-sm text-slate-500">Clasifique y detalle el uso de sus herramientas siguiendo la taxonomía teórica obligatoria.</p>
+                    </div>
+                    <!-- Acciones rápidas -->
+                    <div class="flex gap-2">
+                        <!-- Switch de Vista -->
+                        <div class="bg-slate-100 p-1 rounded-lg border flex gap-1 text-xs font-bold">
+                            <button onclick="toggleMappingView('columns')" id="viewBtn-columns" class="bg-white text-jtDark px-3 py-1.5 rounded-md shadow-sm transition-all">Columnas</button>
+                            <button onclick="toggleMappingView('mindmap')" id="viewBtn-mindmap" class="text-slate-600 px-3 py-1.5 rounded-md transition-all">Mapa Mental</button>
+                        </div>
+                        <button onclick="openCustomToolModal()" class="bg-[#f4f0e1] hover:bg-jtGold hover:text-white border border-jtGold/55 text-jtGold font-bold text-xs px-4 py-2 rounded-lg flex items-center gap-2 shadow-sm transition-all shrink-0">
+                            <i class="fa-solid fa-plus"></i> Nueva Herramienta
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN DE SELECCIÓN RÁPIDA / PRE-CARGADAS -->
+                <div class="bg-slate-50 border rounded-xl p-4">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Catálogo Rápido: Toque para agregar o editar</h3>
+                    <div class="flex flex-wrap gap-2 max-h-40 overflow-y-auto custom-scroll p-1" id="catalogContainer">
+                        <!-- Generado de forma dinámica -->
+                    </div>
+                </div>
+
+                <!-- CONFIGURACIÓN DE VISTA 1: COLUMNAS CLÁSICAS -->
+                <div id="mappingView-columns" class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                    <!-- COLUMNA 1: LEER / ACCEDER -->
+                    <div class="border border-slate-200 rounded-xl bg-slate-50/50 overflow-hidden flex flex-col h-[500px]">
+                        <div class="bg-jtDark text-white p-3 flex justify-between items-center shrink-0">
+                            <span class="font-serif font-bold text-sm"><i class="fa-solid fa-book-open mr-1.5 text-jtGold"></i> 1. Leer / Acceder</span>
+                            <span id="count-leer" class="bg-white/20 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                        </div>
+                        <div class="p-2 bg-slate-100 text-[11px] text-slate-500 font-semibold italic border-b flex justify-between">
+                            <span>Mecanismo: Búsqueda, filtrado, interés</span>
+                            <i class="fa-solid fa-info-circle" title="Fuentes de información de las que nos nutrimos"></i>
+                        </div>
+                        <div class="flex-grow p-3 overflow-y-auto custom-scroll flex flex-col gap-2" id="column-leer">
+                            <!-- Herramientas añadidas irán aquí -->
+                        </div>
+                    </div>
+
+                    <!-- COLUMNA 2: HACER / REFLEXIONAR -->
+                    <div class="border border-slate-200 rounded-xl bg-slate-50/50 overflow-hidden flex flex-col h-[500px]">
+                        <div class="bg-jtDark text-white p-3 flex justify-between items-center shrink-0">
+                            <span class="font-serif font-bold text-sm"><i class="fa-solid fa-pen-to-square mr-1.5 text-jtGold"></i> 2. Hacer / Reflexionar</span>
+                            <span id="count-hacer" class="bg-white/20 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                        </div>
+                        <div class="p-2 bg-slate-100 text-[11px] text-slate-500 font-semibold italic border-b flex justify-between">
+                            <span>Mecanismo: Síntesis, estructuración</span>
+                            <i class="fa-solid fa-info-circle" title="Herramientas donde transformamos y creamos información"></i>
+                        </div>
+                        <div class="flex-grow p-3 overflow-y-auto custom-scroll flex flex-col gap-2" id="column-hacer">
+                            <!-- Herramientas añadidas irán aquí -->
+                        </div>
+                    </div>
+
+                    <!-- COLUMNA 3: COMPARTIR / RELACIONARSE -->
+                    <div class="border border-slate-200 rounded-xl bg-slate-50/50 overflow-hidden flex flex-col h-[500px]">
+                        <div class="bg-jtDark text-white p-3 flex justify-between items-center shrink-0">
+                            <span class="font-serif font-bold text-sm"><i class="fa-solid fa-users mr-1.5 text-jtGold"></i> 3. Compartir (PLN)</span>
+                            <span id="count-compartir" class="bg-white/20 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                        </div>
+                        <div class="p-2 bg-slate-100 text-[11px] text-slate-500 font-semibold italic border-b flex justify-between">
+                            <span>Mecanismo: Colaboración, diálogo</span>
+                            <i class="fa-solid fa-info-circle" title="Contactos, redes y comunidades de práctica (Red Personal)"></i>
+                        </div>
+                        <div class="flex-grow p-3 overflow-y-auto custom-scroll flex flex-col gap-2" id="column-compartir">
+                            <!-- Herramientas añadidas irán aquí -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONFIGURACIÓN DE VISTA 2: MAPA MENTAL DINÁMICO EN VIVO -->
+                <div id="mappingView-mindmap" class="hidden border border-slate-200 rounded-xl bg-slate-50 p-4 h-[550px] relative overflow-hidden flex flex-col">
+                    <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm border px-3 py-1.5 rounded-lg shadow-sm text-xs text-slate-500 z-10 font-semibold">
+                        <i class="fa-solid fa-network-wired text-jtGold mr-1.5 animate-pulse"></i> Visualización del Ecosistema en Red
+                    </div>
+                    <div class="flex-grow relative" id="mindMapCanvasContainer">
+                        <!-- SVG CONNECTIONS LAYER -->
+                        <svg id="mindMapSVG" class="absolute inset-0 w-full h-full pointer-events-none"></svg>
+                        <!-- HTML INTERACTIVE NODES LAYER -->
+                        <div id="mindMapNodes" class="absolute inset-0 w-full h-full"></div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center mt-4">
+                    <button onclick="switchStep(1)" class="border border-slate-300 text-slate-600 font-bold text-sm px-5 py-2.5 rounded-lg hover:bg-slate-50 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i> Atrás
+                    </button>
+                    <button onclick="switchStep(3)" class="bg-jtDark hover:bg-slate-700 text-white font-bold text-sm px-5 py-2.5 rounded-lg shadow transition-all flex items-center gap-2">
+                        Siguiente paso: Reflexión <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PASO 3: REFLEXIÓN CRÍTICA (MAX 150 PALABRAS) -->
+            <div id="stepPanel-3" class="step-panel hidden bg-white rounded-xl p-6 shadow-sm border border-slate-200 flex flex-col gap-6 no-print">
+                <div>
+                    <h2 class="font-serif font-bold text-jtDark text-2xl mb-1">Justificación y Reflexión Crítica</h2>
+                    <p class="text-sm text-slate-500">Redacte una síntesis argumentativa sobre la importancia de su PLE/PLN para su docencia continua.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-xl flex gap-3 text-sm">
+                    <i class="fa-solid fa-circle-exclamation text-lg mt-0.5 shrink-0 text-amber-600"></i>
+                    <div>
+                        <span class="font-bold">Regla de Evaluación Estricta:</span> La guía de aprendizaje de la UDEA especifica que la reflexión debe poseer un máximo de **150 palabras**. Sea conciso y asegure un alto valor crítico.
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <textarea id="reflectionInput" rows="8" placeholder="Redacte aquí su justificación pedagógica..." class="w-full border border-slate-300 rounded-xl p-4 text-sm focus:outline-jtDark resize-none" oninput="checkReflectionWordCount()"></textarea>
+                    <div class="flex justify-between items-center px-1">
+                        <span id="wordCountLabel" class="text-xs font-bold text-slate-500">Palabras: 0 / 150</span>
+                        <span id="wordCountWarning" class="text-xs font-bold text-red-500 hidden"><i class="fa-solid fa-triangle-exclamation"></i> Ha superado el límite de 150 palabras.</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center mt-4">
+                    <button onclick="switchStep(2)" class="border border-slate-300 text-slate-600 font-bold text-sm px-5 py-2.5 rounded-lg hover:bg-slate-50 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i> Atrás
+                    </button>
+                    <button onclick="switchStep(4)" class="bg-jtDark hover:bg-slate-700 text-white font-bold text-sm px-5 py-2.5 rounded-lg shadow transition-all flex items-center gap-2">
+                        Verificar y Exportar <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PASO 4: EXPORTAR Y GENERAR ENTREGABLE -->
+            <div id="stepPanel-4" class="step-panel hidden bg-white rounded-xl p-6 shadow-sm border border-slate-200 flex flex-col gap-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4 no-print">
+                    <div>
+                        <h2 class="font-serif font-bold text-jtDark text-2xl mb-1">Estructura del Entregable de la Semana 3</h2>
+                        <p class="text-sm text-slate-500">Revise la maquetación interactiva estructurada según los estándares exigidos de la UDEA.</p>
+                    </div>
+                    <!-- Acción de imprimir/guardar -->
+                    <button onclick="window.print()" class="bg-jtDark hover:bg-slate-700 text-white font-bold text-sm px-5 py-2.5 rounded-lg shadow transition-all flex items-center gap-2 shrink-0">
+                        <i class="fa-solid fa-file-pdf"></i> Imprimir / Guardar PDF
+                    </button>
+                </div>
+
+                <!-- CONTENEDOR VISTA PREVIA IMPRESIÓN (3 Páginas oficiales) -->
+                <div class="bg-slate-100 border p-2 sm:p-8 rounded-xl flex flex-col gap-8 overflow-x-auto custom-scroll select-none">
+                    
+                    <!-- PÁGINA 1: CARÁTULA -->
+                    <div class="print-page bg-white w-[790px] h-[1118px] shrink-0 mx-auto shadow-md p-[80px] flex flex-col justify-between border" style="page-break-after: always;">
+                        <div class="text-center">
+                            <h2 class="font-serif font-bold text-jtDark text-2xl uppercase tracking-wider">Escuela de Posgrado UDEA</h2>
+                            <p class="text-sm font-bold text-slate-500 uppercase tracking-widest mt-1">Maestría en Educación</p>
+                            <div class="w-24 h-1 bg-jtGold mx-auto mt-4"></div>
+                        </div>
+
+                        <div class="text-center my-auto flex flex-col gap-6">
+                            <span class="text-xs font-bold text-slate-400 tracking-widest uppercase">EVIDENCIA SEMANA 3</span>
+                            <h3 class="font-serif font-bold text-jtDark text-3xl leading-tight">RED PERSONAL DE APRENDIZAJE (PLE/PLN)</h3>
+                            <p class="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">Entorno Personal de Aprendizaje adaptado a la práctica y el desarrollo profesional docente continuo.</p>
+                        </div>
+
+                        <div class="border-t border-slate-200 pt-8 flex flex-col gap-3 text-sm text-slate-600">
+                            <div class="grid grid-cols-3"><span class="font-bold text-jtDark">Estudiante:</span><span class="col-span-2 preview-profile-name">-</span></div>
+                            <div class="grid grid-cols-3"><span class="font-bold text-jtDark">Programa:</span><span class="col-span-2 preview-profile-program">-</span></div>
+                            <div class="grid grid-cols-3"><span class="font-bold text-jtDark">Asignatura:</span><span class="col-span-2 preview-profile-course">-</span></div>
+                            <div class="grid grid-cols-3"><span class="font-bold text-jtDark">Institución:</span><span class="col-span-2 preview-profile-institution">-</span></div>
+                            <div class="grid grid-cols-3"><span class="font-bold text-jtDark">Año Académico:</span><span class="col-span-2">2026</span></div>
+                        </div>
+                    </div>
+
+                    <!-- PÁGINA 2: GRÁFICO DEL PLE (MIND MAP VISUAL) -->
+                    <div class="print-page bg-white w-[790px] h-[1118px] shrink-0 mx-auto shadow-md p-[60px] flex flex-col justify-between border" style="page-break-after: always;">
+                        <div>
+                            <h3 class="font-serif font-bold text-jtDark text-xl pb-2 border-b-2 border-jtGold flex justify-between items-center">
+                                <span>I. Red de Aprendizaje (Mapa Mental)</span>
+                                <span class="text-xs font-sans text-slate-400">Anatomía Estructural</span>
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-2">Mapeo gráfico interconectado según las dimensiones conceptuales de Castañeda y Adell (2013).</p>
+                        </div>
+
+                        <!-- MAPA MENTAL EXPORTABLE (LIENZO DE RED INTERACTIVO-ESTÁTICO) -->
+                        <div class="my-auto relative w-full h-[650px] border border-slate-100 rounded-2xl bg-slate-50 overflow-hidden" id="exportMindMapContainer">
+                            <!-- SVG CONNECTIONS LAYER FOR PRINT -->
+                            <svg id="exportMindMapSVG" class="absolute inset-0 w-full h-full pointer-events-none"></svg>
+                            <!-- HTML INTERACTIVE NODES LAYER FOR PRINT -->
+                            <div id="exportMindMapNodes" class="absolute inset-0 w-full h-full"></div>
+                        </div>
+
+                        <div class="text-center text-[10px] text-slate-400">
+                            Maestría en Educación - UDEA | Red Personal de Aprendizaje (PLE/PLN)
+                        </div>
+                    </div>
+
+                    <!-- PÁGINA 3: TABLA DE RESPONSABILIDADES & REFLEXIÓN -->
+                    <div class="print-page bg-white w-[790px] h-[1118px] shrink-0 mx-auto shadow-md p-[60px] flex flex-col justify-between border">
+                        <div class="flex flex-col gap-6">
+                            <div>
+                                <h3 class="font-serif font-bold text-jtDark text-xl pb-2 border-b-2 border-jtGold">II. Justificación Pedagógica</h3>
+                                <p class="text-xs text-slate-500 mt-2">Reflexión crítica y metacognitiva sobre la estructuración y aplicación del PLE en la práctica universitaria.</p>
+                            </div>
+
+                            <!-- REFLEXIÓN MOSTRADA -->
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 text-sm leading-relaxed text-slate-700 italic font-serif relative">
+                                <span class="text-4xl text-jtGold/30 absolute top-2 left-2 font-serif">“</span>
+                                <p class="indent-6" id="preview-reflection-text">Redacte su justificación pedagógica en el paso anterior para que aparezca impresa aquí.</p>
+                                <span class="text-4xl text-jtGold/30 absolute bottom-2 right-2 font-serif">”</span>
+                            </div>
+
+                            <!-- INVENTARIO DE SEGURIDAD / LICENCIAS (MUESTRA DE COMPROMISO ÉTICO) -->
+                            <div class="flex flex-col gap-3">
+                                <h4 class="font-serif font-bold text-jtDark text-sm">Compromisos de Ética y Responsabilidad Tecnológica</h4>
+                                <div class="grid grid-cols-2 gap-3 text-xs">
+                                    <div class="border border-slate-200 rounded-lg p-3 bg-slate-50">
+                                        <h5 class="font-bold text-jtDark mb-1.5"><i class="fa-solid fa-copyright text-jtGold mr-1.5"></i> Gestión Ética de Licencias</h5>
+                                        <p class="text-slate-500 leading-normal">Se promueve el uso sistemático de licencias abiertas (como Creative Commons) y de recursos educativos en acceso abierto (OER) reconociendo siempre los derechos intelectuales de autoría.</p>
+                                    </div>
+                                    <div class="border border-slate-200 rounded-lg p-3 bg-slate-50">
+                                        <h5 class="font-bold text-jtDark mb-1.5"><i class="fa-solid fa-shield-halved text-jtGold mr-1.5"></i> Seguridad Tecnológica</h5>
+                                        <p class="text-slate-500 leading-normal">Uso responsable de redes, resguardando datos personales, empleando contraseñas seguras y minimizando los riesgos asociados a la navegación o pérdida accidental de información académica.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- REFERENCIA BIBLIOGRÁFICA -->
+                            <div class="border-t pt-4">
+                                <h4 class="font-serif font-bold text-jtDark text-xs tracking-wider uppercase mb-2">Referencia Obligatoria (APA 7)</h4>
+                                <p class="text-[11px] text-slate-600 bg-slate-50 p-2.5 rounded border border-slate-200 leading-normal font-sans">
+                                    Castañeda, L. y Adell, J. (Eds.). (2013). <em>Entornos Personales de Aprendizaje: claves para el ecosistema educativo en red</em>. Alcoy: Marfil.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="text-center text-[10px] text-slate-400">
+                            Maestría en Educación - UDEA | Red Personal de Aprendizaje (PLE/PLN)
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- PIE DE PÁGINA CON AUTORÍA DE JAVIER TRIGOSO -->
+    <footer class="bg-jtDark text-[#f4f0e1] text-xs py-5 border-t border-jtGold/40 mt-auto shrink-0 no-print">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex flex-col gap-1 text-center md:text-left">
+                <p class="font-serif font-bold text-sm text-jtCream">Universidad para el Desarrollo Andino &copy; 2026</p>
+                <p class="text-slate-400">Escuela de Posgrado | Maestría en Educación</p>
+            </div>
+            <!-- ENLACE DE AUTORÍA A LINKEDIN -->
+            <div class="flex items-center gap-3 bg-jtSlate/10 px-4 py-2 rounded-xl border border-jtGold/20">
+                <div class="text-[11px] text-right">
+                    <p class="text-slate-400 font-semibold uppercase tracking-wider text-[9px]">Diseñado y desarrollado por:</p>
+                    <a href="https://www.linkedin.com/in/javiertrigoso/" target="_blank" class="font-bold text-jtGold hover:text-jtCream transition-colors flex items-center gap-1.5">
+                        Javier Trigoso <i class="fa-brands fa-linkedin text-sm"></i>
+                    </a>
+                </div>
+                <div class="w-9 h-9 rounded-full bg-jtGold text-jtDark font-bold flex items-center justify-center font-serif text-sm shadow">
+                    JT
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL DE EDICIÓN / COMPLEMENTO DE DATOS DE LA HERRAMIENTA -->
+    <div id="toolModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl border flex flex-col">
+            <!-- Modal Header -->
+            <div class="bg-jtDark text-white p-4 flex justify-between items-center">
+                <div class="flex items-center gap-2.5">
+                    <span id="modalToolIcon" class="text-jtGold text-xl"><i class="fa-solid fa-wrench"></i></span>
+                    <h3 id="modalToolName" class="font-serif font-bold text-lg">Configurar Herramienta</h3>
+                </div>
+                <button onclick="closeToolModal()" class="text-white hover:text-slate-300 text-lg focus:outline-none">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6 flex flex-col gap-4 overflow-y-auto max-h-[70vh]">
+                <!-- Categoría del PLE -->
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-slate-600 uppercase">Dimensión del PLE (Castañeda & Adell)</label>
+                    <select id="modalCategory" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-jtGold">
+                        <option value="leer">1. Leer / Acceder a la información</option>
+                        <option value="hacer">2. Hacer / Reflexionar (Modificar y crear)</option>
+                        <option value="compartir">3. Compartir / Relacionarse (PLN)</option>
+                    </select>
+                </div>
+
+                <!-- Propósito de uso -->
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-slate-600 uppercase">Propósito Principal de Uso</label>
+                    <select id="modalPurpose" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-jtGold">
+                        <option value="Académico">Académico (Apoyo a la Docencia y Aprendizaje Formal)</option>
+                        <option value="Personal">Personal (Autoaprendizaje, Interés Propio)</option>
+                    </select>
+                </div>
+
+                <!-- Función Específica -->
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-slate-600 uppercase">Función Específica (Cómo la emplea)</label>
+                    <input type="text" id="modalFunction" placeholder="Ej. Filtrar alertas científicas de mi especialidad..." class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-jtGold">
+                </div>
+
+                <!-- Mecanismo Cognitivo -->
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-slate-600 uppercase">Mecanismo Cognitivo Implicado</label>
+                    <input type="text" id="modalCognitive" placeholder="Ej. Síntesis, curiosidad, análisis o diálogo..." class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-jtGold">
+                </div>
+
+                <!-- Licencias y Seguridad -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs font-bold text-slate-600 uppercase">Licencia / Derechos</label>
+                        <select id="modalLicense" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-jtGold">
+                            <option value="Creative Commons">Creative Commons (Abierto)</option>
+                            <option value="Copyright">Copyright (Uso Privado)</option>
+                            <option value="Open Source">Open Source / GNU</option>
+                            <option value="Dominio Público">Dominio Público</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs font-bold text-slate-600 uppercase">Seguridad Aplicada</label>
+                        <select id="modalSafety" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-jtGold">
+                            <option value="Contraseña Segura">Contraseña Segura / MFA</option>
+                            <option value="Privacidad de Datos">Ajustes de Privacidad</option>
+                            <option value="Uso en Red Segura">Uso en Red Segura</option>
+                            <option value="No aplica">No aplica</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-slate-50 p-4 border-t flex justify-between gap-3">
+                <button onclick="deleteCurrentTool()" id="modalDeleteBtn" class="bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-xs px-4 py-2.5 rounded-lg border border-red-200 transition-all flex items-center gap-1">
+                    <i class="fa-solid fa-trash"></i> Eliminar
+                </button>
+                <div class="flex gap-2">
+                    <button onclick="closeToolModal()" class="border border-slate-300 hover:bg-slate-100 text-slate-600 font-bold text-xs px-4 py-2.5 rounded-lg transition-all">
+                        Cancelar
+                    </button>
+                    <button onclick="saveToolMetadata()" class="bg-jtDark hover:bg-slate-700 text-white font-bold text-xs px-4 py-2.5 rounded-lg transition-all shadow">
+                        Guardar Configuración
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA NUEVA HERRAMIENTA PERSONALIZADA -->
+    <div id="customToolModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-white rounded-2xl max-w-sm w-full overflow-hidden shadow-2xl border flex flex-col">
+            <div class="bg-jtDark text-white p-4 flex justify-between items-center">
+                <h3 class="font-serif font-bold text-lg"><i class="fa-solid fa-plus text-jtGold mr-1.5"></i> Agregar Herramienta</h3>
+                <button onclick="closeCustomToolModal()" class="text-white hover:text-slate-300 text-lg focus:outline-none">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-5 flex flex-col gap-4">
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-slate-600 uppercase">Nombre de la Herramienta</label>
+                    <input type="text" id="customName" placeholder="Ej. Perplexity AI, Teams, etc..." class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-jtGold">
+                </div>
+                <!-- SELECTOR VISUAL DE ICONOS MEJORADO -->
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-slate-600 uppercase">Seleccione un Icono</label>
+                    <div class="grid grid-cols-4 gap-2 mt-1" id="iconPickerContainer">
+                        <!-- Generado dinámicamente -->
+                    </div>
+                    <input type="hidden" id="customIcon" value="fa-solid fa-cubes">
+                </div>
+            </div>
+            <div class="bg-slate-50 p-4 border-t flex justify-end gap-2">
+                <button onclick="closeCustomToolModal()" class="border border-slate-300 hover:bg-slate-100 text-slate-600 font-bold text-xs px-4 py-2 rounded-lg">Cancelar</button>
+                <button onclick="addCustomTool()" class="bg-jtGold hover:bg-jtGoldDark text-white font-bold text-xs px-4 py-2 rounded-lg shadow-sm">Agregar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS Y LÓGICA DE NEGOCIO -->
+    <script>
+        // BASE DE DATOS DE HERRAMIENTAS PRE-CARGADAS AMPLIADA A 42 PARA MAYOR RIQUEZA DE DISEÑO
+        const PRELOADED_CATALOG = [
+            // 1. LEER / ACCEDER (14 Herramientas)
+            { id: 'google_scholar', name: 'Google Scholar', category: 'leer', icon: 'fa-solid fa-graduation-cap', custom: false, purpose: 'Académico', function: 'Búsqueda de literatura científica y papers', cognitive: 'Búsqueda, Curiosidad', license: 'Dominio Público', safety: 'Privacidad de Datos' },
+            { id: 'scopus', name: 'Scopus', category: 'leer', icon: 'fa-solid fa-database', custom: false, purpose: 'Académico', function: 'Consulta de artículos en bases indexadas de alto impacto', cognitive: 'Análisis, Filtrado', license: 'Copyright', safety: 'Uso en Red Segura' },
+            { id: 'wos', name: 'Web of Science', category: 'leer', icon: 'fa-solid fa-chart-line', custom: false, purpose: 'Académico', function: 'Búsqueda de literatura y análisis de impacto', cognitive: 'Descarte Crítico', license: 'Copyright', safety: 'Uso en Red Segura' },
+            { id: 'feedly', name: 'Feedly', category: 'leer', icon: 'fa-solid fa-rss', custom: false, purpose: 'Académico', function: 'Organizar blogs académicos y canales de noticias por RSS', cognitive: 'Sintetizar', license: 'Creative Commons', safety: 'Contraseña Segura' },
+            { id: 'zotero', name: 'Zotero', category: 'leer', icon: 'fa-solid fa-folder-open', custom: false, purpose: 'Académico', function: 'Gestión de citas bibliográficas y guardado de ficheros', cognitive: 'Organización', license: 'Open Source', safety: 'Privacidad de Datos' },
+            { id: 'mendeley', name: 'Mendeley', category: 'leer', icon: 'fa-solid fa-book', custom: false, purpose: 'Académico', function: 'Organizar referencias y PDFs científicos', cognitive: 'Clasificación', license: 'Copyright', safety: 'Contraseña Segura' },
+            { id: 'pubmed', name: 'PubMed', category: 'leer', icon: 'fa-solid fa-microscope', custom: false, purpose: 'Académico', function: 'Acceso a base de datos de medicina y biología', cognitive: 'Curiosidad', license: 'Dominio Público', safety: 'Uso en Red Segura' },
+            { id: 'eric', name: 'ERIC Database', category: 'leer', icon: 'fa-solid fa-school', custom: false, purpose: 'Académico', function: 'Búsqueda de artículos sobre ciencias de la educación', cognitive: 'Filtrado', license: 'Dominio Público', safety: 'No aplica' },
+            { id: 'researchgate_read', name: 'ResearchGate (Lectura)', category: 'leer', icon: 'fa-solid fa-circle-nodes', custom: false, purpose: 'Académico', function: 'Seguimiento de publicaciones de investigadores de mi área', cognitive: 'Lectura Crítica', license: 'Creative Commons', safety: 'Contraseña Segura' },
+            { id: 'wikipedia', name: 'Wikipedia', category: 'leer', icon: 'fa-solid fa-globe', custom: false, purpose: 'Personal', function: 'Consulta rápida de conceptos básicos y referencias', cognitive: 'Búsqueda', license: 'Creative Commons', safety: 'No aplica' },
+            { id: 'youtube_read', name: 'YouTube (Tutoriales)', category: 'leer', icon: 'fa-brands fa-youtube', custom: false, purpose: 'Personal', function: 'Visualizar webinars y guías metodológicas', cognitive: 'Curiosidad', license: 'Creative Commons', safety: 'Ajustes de Privacidad' },
+            { id: 'scihub', name: 'Sci-Hub', category: 'leer', icon: 'fa-solid fa-key', custom: false, purpose: 'Académico', function: 'Acceso alternativo de emergencia a artículos de pago', cognitive: 'Búsqueda', license: 'Dominio Público', safety: 'Uso en Red Segura' },
+            { id: 'alicia_concytec', name: 'ALICIA Concytec', category: 'leer', icon: 'fa-solid fa-landmark', custom: false, purpose: 'Académico', function: 'Búsqueda de tesis y producción científica peruana de acceso abierto', cognitive: 'Filtrado, Contextualización', license: 'Creative Commons', safety: 'No aplica' },
+            { id: 'deepl_read', name: 'DeepL Traductor', category: 'leer', icon: 'fa-solid fa-language', custom: false, purpose: 'Personal', function: 'Traducción de papers en otros idiomas con precisión IA', cognitive: 'Comprensión', license: 'Copyright', safety: 'Privacidad de Datos' },
+            
+            // 2. HACER / REFLEXIONAR (14 Herramientas)
+            { id: 'miro', name: 'Miro', category: 'hacer', icon: 'fa-solid fa-square-poll-horizontal', custom: false, purpose: 'Académico', function: 'Estructuración de mapas mentales y pizarras para clases', cognitive: 'Síntesis', license: 'Copyright', safety: 'Ajustes de Privacidad' },
+            { id: 'coggle', name: 'Coggle', category: 'hacer', icon: 'fa-solid fa-diagram-project', custom: false, purpose: 'Académico', function: 'Diseño de mapas de flujo e ideas conceptuales', cognitive: 'Organización', license: 'Creative Commons', safety: 'Contraseña Segura' },
+            { id: 'canva', name: 'Canva', category: 'hacer', icon: 'fa-solid fa-palette', custom: false, purpose: 'Académico', function: 'Diseñar infografías didácticas y presentaciones visuales', cognitive: 'Creación Digital', license: 'Copyright', safety: 'Contraseña Segura' },
+            { id: 'wordpress', name: 'WordPress', category: 'hacer', icon: 'fa-brands fa-wordpress', custom: false, purpose: 'Académico', function: 'Redacción de un blog de reflexión sobre mi práctica docente', cognitive: 'Análisis, Redacción', license: 'Open Source', safety: 'Ajustes de Privacidad' },
+            { id: 'medium', name: 'Medium', category: 'hacer', icon: 'fa-brands fa-medium', custom: false, purpose: 'Personal', function: 'Publicar ideas breves sobre docencia andina', cognitive: 'Reflexión', license: 'Creative Commons', safety: 'Privacidad de Datos' },
+            { id: 'notion', name: 'Notion', category: 'hacer', icon: 'fa-solid fa-clipboard-list', custom: false, purpose: 'Académico', function: 'Organizar el cronograma de investigación y diario de campo', cognitive: 'Sintetizar', license: 'Copyright', safety: 'Contraseña Segura' },
+            { id: 'googledocs', name: 'Google Docs', category: 'hacer', icon: 'fa-solid fa-file-lines', custom: false, purpose: 'Académico', function: 'Redacción colaborativa de artículos de investigación', cognitive: 'Escritura, Reflexión', license: 'Copyright', safety: 'Ajustes de Privacidad' },
+            { id: 'word', name: 'Microsoft Word', category: 'hacer', icon: 'fa-solid fa-file-word', custom: false, purpose: 'Académico', function: 'Procesamiento de textos y diseño curricular', cognitive: 'Redacción Sólida', license: 'Copyright', safety: 'Uso en Red Segura' },
+            { id: 'google_slides', name: 'Google Slides', category: 'hacer', icon: 'fa-solid fa-file-powerpoint', custom: false, purpose: 'Académico', function: 'Elaboración de diapositivas interactivas para docencia', cognitive: 'Síntesis', license: 'Copyright', safety: 'No aplica' },
+            { id: 'obs_studio', name: 'OBS Studio', category: 'hacer', icon: 'fa-solid fa-video', custom: false, purpose: 'Académico', function: 'Grabación de videolecciones para el aula invertida', cognitive: 'Creación', license: 'Open Source', safety: 'No aplica' },
+            { id: 'evernote', name: 'Evernote', category: 'hacer', icon: 'fa-solid fa-note-sticky', custom: false, purpose: 'Personal', function: 'Capturar notas e ideas rápidas para investigaciones', cognitive: 'Clasificación', license: 'Copyright', safety: 'Contraseña Segura' },
+            { id: 'diigo_annotate', name: 'Diigo (Reflexión)', category: 'hacer', icon: 'fa-solid fa-marker', custom: false, purpose: 'Académico', function: 'Subrayado y colocación de notas críticas en PDFs de lectura', cognitive: 'Lectura Activa', license: 'Copyright', safety: 'Contraseña Segura' },
+            { id: 'chatgpt_hacer', name: 'ChatGPT (Borrador)', category: 'hacer', icon: 'fa-solid fa-robot', custom: false, purpose: 'Académico', function: 'Generación de ideas, estructuras y retroalimentación didáctica', cognitive: 'Co-creación, Síntesis', license: 'Copyright', safety: 'Privacidad de Datos' },
+            { id: 'claude_hacer', name: 'Claude (Redacción)', category: 'hacer', icon: 'fa-solid fa-brain', custom: false, purpose: 'Académico', function: 'Edición y análisis de rigor en mis borradores de papers', cognitive: 'Evaluación Crítica', license: 'Copyright', safety: 'Contraseña Segura' },
+
+            // 3. COMPARTIR / RELACIONARSE (14 Herramientas)
+            { id: 'researchgate_net', name: 'ResearchGate (Red)', category: 'compartir', icon: 'fa-solid fa-graduation-cap', custom: false, purpose: 'Académico', function: 'Intercambio directo de preprints y diálogo con pares científicos', cognitive: 'Diálogo, Co-creación', license: 'Creative Commons', safety: 'Contraseña Segura' },
+            { id: 'academia_edu', name: 'Academia.edu', category: 'compartir', icon: 'fa-solid fa-school', custom: false, purpose: 'Académico', function: 'Socializar mis investigaciones pedagógicas con la comunidad', cognitive: 'Diálogo', license: 'Copyright', safety: 'Privacidad de Datos' },
+            { id: 'twitter', name: 'Twitter / X', category: 'compartir', icon: 'fa-brands fa-twitter', custom: false, purpose: 'Académico', function: 'Seguimiento de debates con hilos educativos y hashtags (#edchat)', cognitive: 'Diálogo, Intercambio', license: 'Copyright', safety: 'Ajustes de Privacidad' },
+            { id: 'linkedin', name: 'LinkedIn', category: 'compartir', icon: 'fa-brands fa-linkedin', custom: false, purpose: 'Académico', function: 'Red de contacto profesional con otras universidades', cognitive: 'Consenso', license: 'Copyright', safety: 'Ajustes de Privacidad' },
+            { id: 'telegram', name: 'Telegram (Canales)', category: 'compartir', icon: 'fa-brands fa-telegram', custom: false, purpose: 'Personal', function: 'Grupos de discusión sobre software libre y educación', cognitive: 'Colaboración', license: 'Open Source', safety: 'Contraseña Segura' },
+            { id: 'whatsapp_groups', name: 'WhatsApp (Grupos)', category: 'compartir', icon: 'fa-brands fa-whatsapp', custom: false, purpose: 'Académico', function: 'Coordinación inmediata con coinvestigadores y comités', cognitive: 'Colaboración Síncrona', license: 'Copyright', safety: 'Ajustes de Privacidad' },
+            { id: 'moodle_forum', name: 'Foros de Moodle', category: 'compartir', icon: 'fa-solid fa-comments', custom: false, purpose: 'Académico', function: 'Interacción y debates asíncronos con los estudiantes', cognitive: 'Evaluación Dialógica', license: 'Open Source', safety: 'Uso en Red Segura' },
+            { id: 'ms_teams', name: 'Microsoft Teams', category: 'compartir', icon: 'fa-solid fa-people-group', custom: false, purpose: 'Académico', function: 'Reuniones de investigación colegiada y tutorías síncronas', cognitive: 'Diálogo', license: 'Copyright', safety: 'Contraseña Segura' },
+            { id: 'slack', name: 'Slack', category: 'compartir', icon: 'fa-brands fa-slack', custom: false, purpose: 'Académico', function: 'Gestión de tareas colaborativas de proyectos con mi equipo', cognitive: 'Co-creación', license: 'Copyright', safety: 'Contraseña Segura' },
+            { id: 'github', name: 'GitHub', category: 'compartir', icon: 'fa-brands fa-github', custom: false, purpose: 'Personal', function: 'Compartir plantillas de código didácticas y recursos libres', cognitive: 'Colaboración Abierta', license: 'Open Source', safety: 'Contraseña Segura' },
+            { id: 'orcid', name: 'ORCID Network', category: 'compartir', icon: 'fa-solid fa-id-card', custom: false, purpose: 'Académico', function: 'Establecer mi identificador de investigador unificado global', cognitive: 'Identidad Digital', license: 'Dominio Público', safety: 'Privacidad de Datos' },
+            { id: 'facebook_groups', name: 'Facebook Groups', category: 'compartir', icon: 'fa-brands fa-facebook', custom: false, purpose: 'Personal', function: 'Participación en grupos de profesores de educación superior', cognitive: 'Intercambio Informal', license: 'Copyright', safety: 'Ajustes de Privacidad' },
+            { id: 'zoom_compartir', name: 'Zoom Meetings', category: 'compartir', icon: 'fa-solid fa-video', custom: false, purpose: 'Académico', function: 'Dictar conferencias web y coordinar tesis internacionales', cognitive: 'Diálogo Co-constructivo', license: 'Copyright', safety: 'Contraseña Segura' },
+            { id: 'padlet_pizarra', name: 'Padlet (Mural)', category: 'compartir', icon: 'fa-solid fa-chalkboard', custom: false, purpose: 'Académico', function: 'Socialización y co-evaluación grupal de mapas de aprendizaje', cognitive: 'Colaboración Visual', license: 'Copyright', safety: 'Uso en Red Segura' }
+        ];
+
+        // CONFIGURACIÓN DE COLORES DE TEMAS DE RED (Inspirados en la marca JT)
+        const THEMING_CONFIG = {
+            classic: {
+                leer: { bg: 'bg-[#faf8f2]', border: 'border-slate-300', text: 'text-slate-800', stroke: '#4f5d65' },
+                hacer: { bg: 'bg-[#f4f0e1]', border: 'border-jtGold', text: 'text-jtGoldDark', stroke: '#c0a05a' },
+                compartir: { bg: 'bg-[#faf8f2]', border: 'border-jtGold/30', text: 'text-slate-700', stroke: '#9e8043' },
+                center: '#2c3539'
+            },
+            sunset: {
+                leer: { bg: 'bg-pink-50', border: 'border-pink-400', text: 'text-pink-700', stroke: '#ec4899' },
+                hacer: { bg: 'bg-orange-50', border: 'border-orange-400', text: 'text-orange-700', stroke: '#f97316' },
+                compartir: { bg: 'bg-purple-50', border: 'border-purple-400', text: 'text-purple-700', stroke: '#a855f7' },
+                center: '#7c3aed'
+            },
+            forest: {
+                leer: { bg: 'bg-emerald-50', border: 'border-emerald-400', text: 'text-emerald-700', stroke: '#10b981' },
+                hacer: { bg: 'bg-yellow-50', border: 'border-yellow-400', text: 'text-yellow-700', stroke: '#eab308' },
+                compartir: { bg: 'bg-cyan-50', border: 'border-cyan-400', text: 'text-cyan-700', stroke: '#06b6d4' },
+                center: '#0f5132'
+            },
+            slate: {
+                leer: { bg: 'bg-slate-100', border: 'border-slate-400', text: 'text-slate-800', stroke: '#64748b' },
+                hacer: { bg: 'bg-zinc-100', border: 'border-zinc-400', text: 'text-zinc-800', stroke: '#71717a' },
+                compartir: { bg: 'bg-neutral-100', border: 'border-neutral-400', text: 'text-neutral-800', stroke: '#737373' },
+                center: '#1e293b'
+            }
+        };
+
+        const AVATAR_MAP = {
+            professor: 'fa-solid fa-user-tie',
+            researcher: 'fa-solid fa-graduation-cap',
+            laptop: 'fa-solid fa-laptop-code',
+            book: 'fa-solid fa-book-atlas'
+        };
+
+        // LISTA DE ICONOS DISPONIBLES PARA EL ICON PICKER DE HERRAMIENTA PERSONALIZADA
+        const ICON_PICKER_OPTIONS = [
+            'fa-solid fa-graduation-cap', 'fa-solid fa-book', 'fa-solid fa-pen-nib', 'fa-solid fa-brain',
+            'fa-solid fa-users', 'fa-solid fa-laptop-code', 'fa-solid fa-robot', 'fa-solid fa-video',
+            'fa-solid fa-comments', 'fa-solid fa-cloud', 'fa-solid fa-chart-simple', 'fa-solid fa-globe',
+            'fa-solid fa-mobile-screen-button', 'fa-solid fa-cubes', 'fa-solid fa-folder-open', 'fa-solid fa-microscope'
+        ];
+
+        // ESTADO GLOBAL DE LA APLICACIÓN
+        let appState = {
+            profile: {
+                name: '',
+                institution: 'Universidad para el Desarrollo Andino',
+                program: 'Maestría en Educación con Mención en Docencia Universitaria',
+                course: 'Competencias Digitales para la Docencia Universitaria'
+            },
+            myTools: [], // Herramientas que el usuario ha seleccionado y configurado en su PLE
+            customTools: [], // Herramientas extra creadas por el usuario
+            reflection: '',
+            currentEditToolId: null,
+            activeView: 'columns', // 'columns' o 'mindmap'
+            avatar: 'professor', // avatar por defecto
+            selectedCustomIcon: 'fa-solid fa-graduation-cap' // icono seleccionado por defecto en el picker
+        };
+
+        // INICIALIZACIÓN
+        window.addEventListener('DOMContentLoaded', () => {
+            // Cargar herramientas por defecto de forma que inicie con un ecosistema preliminar rico (10 de ejemplo)
+            appState.myTools = [
+                JSON.parse(JSON.stringify(PRELOADED_CATALOG[0])), // Google Scholar
+                JSON.parse(JSON.stringify(PRELOADED_CATALOG[3])), // Feedly
+                JSON.parse(JSON.stringify(PRELOADED_CATALOG[4])), // Zotero
+                JSON.parse(JSON.stringify(PRELOADED_CATALOG[12])), // ALICIA Concytec
+                JSON.parse(JSON.stringify(PRELOADED_CATALOG[14])), // Miro
+                JSON.parse(JSON.stringify(PRELOADED_CATALOG[16])), // Canva
+                JSON.parse(JSON.stringify(PRELOADED_CATALOG[19])), // Notion
+                JSON.parse(JSON.stringify(PRELOADED_CATALOG[26])), // ChatGPT (Borrador)
+                JSON.parse(JSON.stringify(PRELOADED_CATALOG[28])), // ResearchGate (Red)
+                JSON.parse(JSON.stringify(PRELOADED_CATALOG[31]))  // LinkedIn
+            ];
+            
+            initCatalog();
+            initIconPicker();
+            updateUI();
+        });
+
+        // CARGAR CATÁLOGO DE INICIO
+        function initCatalog() {
+            const catalogContainer = document.getElementById('catalogContainer');
+            catalogContainer.innerHTML = '';
+            
+            // Unimos herramientas precargadas y personalizadas
+            const allCatalog = [...PRELOADED_CATALOG, ...appState.customTools];
+
+            allCatalog.forEach(tool => {
+                const isSelected = appState.myTools.some(t => t.id === tool.id);
+                const btn = document.createElement('button');
+                btn.id = `catalog-btn-${tool.id}`;
+                btn.className = `flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold transition-all shadow-sm ${
+                    isSelected 
+                    ? 'bg-jtDark text-white border-jtDark hover:bg-[#3d494f]' 
+                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                }`;
+                btn.onclick = () => handleCatalogClick(tool);
+                btn.innerHTML = `<i class="${tool.icon}"></i> <span>${tool.name}</span>`;
+                catalogContainer.appendChild(btn);
+            });
+        }
+
+        // CARGAR OPCIONES DEL ICON PICKER EN EL MODAL DE HERRAMIENTA PERSONALIZADA
+        function initIconPicker() {
+            const container = document.getElementById('iconPickerContainer');
+            container.innerHTML = '';
+            
+            ICON_PICKER_OPTIONS.forEach(iconClass => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.id = `picker-icon-${iconClass.replace(/\s+/g, '-')}`;
+                btn.className = `p-2.5 rounded-xl border text-center transition-all hover:bg-slate-50 text-slate-600 ${
+                    iconClass === appState.selectedCustomIcon ? 'border-jtGold bg-[#f4f0e1] text-jtGold font-bold ring-2 ring-jtGold/20' : 'border-slate-200'
+                }`;
+                btn.onclick = () => selectCustomIcon(iconClass);
+                btn.innerHTML = `<i class="${iconClass} text-lg"></i>`;
+                container.appendChild(btn);
+            });
+        }
+
+        // SELECCIONAR ICONO EN EL PICKER
+        function selectCustomIcon(iconClass) {
+            appState.selectedCustomIcon = iconClass;
+            document.getElementById('customIcon').value = iconClass;
+            
+            ICON_PICKER_OPTIONS.forEach(ic => {
+                const btn = document.getElementById(`picker-icon-${ic.replace(/\s+/g, '-')}`);
+                if (btn) {
+                    if (ic === iconClass) {
+                        btn.className = "p-2.5 rounded-xl border text-center transition-all border-jtGold bg-[#f4f0e1] text-jtGold font-bold ring-2 ring-jtGold/20";
+                    } else {
+                        btn.className = "p-2.5 rounded-xl border text-center transition-all border-slate-200 hover:bg-slate-50 text-slate-600";
+                    }
+                }
+            });
+        }
+
+        // CONTROL DE ACCIONES AL CLICAR EL CATÁLOGO
+        function handleCatalogClick(tool) {
+            const index = appState.myTools.findIndex(t => t.id === tool.id);
+            if (index > -1) {
+                // Si ya existe, abrimos directamente para editar o quitar
+                openToolModal(appState.myTools[index]);
+            } else {
+                // Clonamos la configuración por defecto y abrimos para completar la ficha
+                const toolClone = JSON.parse(JSON.stringify(tool));
+                appState.myTools.push(toolClone);
+                openToolModal(toolClone);
+            }
+        }
+
+        // INTERCAMBIAR ENTRE PASOS (WIZARD)
+        function switchStep(stepNum) {
+            document.querySelectorAll('.step-panel').forEach(panel => panel.classList.add('hidden'));
+            document.getElementById(`stepPanel-${stepNum}`).classList.remove('hidden');
+
+            document.querySelectorAll('.step-btn').forEach(btn => {
+                btn.className = "step-btn flex items-center gap-3 w-full p-3 rounded-lg text-left font-semibold text-sm transition-all text-slate-600 hover:bg-slate-50";
+                // Reset a círculos de pasos
+                const numSpan = btn.querySelector('span');
+                if (numSpan) {
+                    numSpan.className = "w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-xs shrink-0";
+                }
+            });
+
+            const activeBtn = document.getElementById(`stepBtn-${stepNum}`);
+            activeBtn.className = "step-btn flex items-center gap-3 w-full p-3 rounded-lg text-left font-semibold text-sm transition-all bg-jtDark text-white shadow-sm";
+            const numSpan = activeBtn.querySelector('span');
+            if (numSpan) {
+                numSpan.className = "w-6 h-6 rounded-full bg-jtGold text-jtDark flex items-center justify-center font-bold text-xs shrink-0";
+            }
+
+            // Si cambiamos a exportar, regeneramos la vista de entrega
+            if (stepNum === 4) {
+                renderPreview();
+            }
+        }
+
+        // CONTROLAR EL TIPO DE VISTA DEL MAPEO EN PASO 2
+        function toggleMappingView(viewType) {
+            appState.activeView = viewType;
+            if (viewType === 'columns') {
+                document.getElementById('mappingView-columns').classList.remove('hidden');
+                document.getElementById('mappingView-mindmap').classList.add('hidden');
+                document.getElementById('viewBtn-columns').className = "bg-white text-jtDark px-3 py-1.5 rounded-md shadow-sm transition-all";
+                document.getElementById('viewBtn-mindmap').className = "text-slate-600 px-3 py-1.5 rounded-md transition-all";
+            } else {
+                document.getElementById('mappingView-columns').classList.add('hidden');
+                document.getElementById('mappingView-mindmap').classList.remove('hidden');
+                document.getElementById('viewBtn-columns').className = "text-slate-600 px-3 py-1.5 rounded-md transition-all";
+                document.getElementById('viewBtn-mindmap').className = "bg-white text-jtDark px-3 py-1.5 rounded-md shadow-sm transition-all";
+                setTimeout(renderMindMap, 50); // Dibujar mapa mental cuando el canvas sea visible
+            }
+        }
+
+        // CONFIGURAR AVATAR ACTIVO
+        function setAvatar(type) {
+            appState.avatar = type;
+            document.querySelectorAll('.avatar-btn').forEach(btn => {
+                btn.className = "avatar-btn border rounded p-1.5 text-center text-slate-600 hover:bg-[#f4f0e1] focus:border-jtGold";
+            });
+            document.getElementById(`avatar-${type}`).className = "avatar-btn border rounded p-1.5 text-center text-slate-600 hover:bg-[#f4f0e1] border-jtGold bg-[#f4f0e1]";
+            if (appState.activeView === 'mindmap') {
+                renderMindMap();
+            }
+        }
+
+        // GUARDAR PERFIL EN EL ESTADO
+        function saveProfile() {
+            appState.profile.name = document.getElementById('inputName').value;
+            appState.profile.institution = document.getElementById('inputInstitution').value;
+            appState.profile.program = document.getElementById('inputProgram').value;
+            appState.profile.course = document.getElementById('inputCourse').value;
+        }
+
+        // ACTUALIZAR COLUMNAS DEL PLE Y CONTADORES
+        function updateUI() {
+            const colLeer = document.getElementById('column-leer');
+            const colHacer = document.getElementById('column-hacer');
+            const colCompartir = document.getElementById('column-compartir');
+
+            colLeer.innerHTML = '';
+            colHacer.innerHTML = '';
+            colCompartir.innerHTML = '';
+
+            let counts = { leer: 0, hacer: 0, compartir: 0 };
+
+            appState.myTools.forEach(tool => {
+                counts[tool.category]++;
+                
+                const card = document.createElement('div');
+                card.className = "bg-white border rounded-xl p-3 shadow-sm hover:shadow transition-all flex flex-col gap-2 relative group cursor-pointer border-l-4 border-l-jtGold";
+                card.onclick = () => openToolModal(tool);
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-2">
+                            <span class="text-jtDark text-sm bg-slate-100 p-1.5 rounded-lg"><i class="${tool.icon}"></i></span>
+                            <h4 class="font-bold text-xs text-slate-700">${tool.name}</h4>
+                        </div>
+                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full ${tool.purpose === 'Académico' ? 'bg-[#f4f0e1] text-jtGoldDark' : 'bg-orange-50 text-orange-600'}">${tool.purpose}</span>
+                    </div>
+                    <p class="text-[10px] text-slate-500 line-clamp-2 leading-snug"><strong class="text-slate-600">Función:</strong> ${tool.function || 'Sin configurar, toque para editar.'}</p>
+                    <div class="flex justify-between items-center border-t pt-1.5 mt-1 text-[9px] text-slate-400">
+                        <span><i class="fa-solid fa-brain mr-1"></i>${tool.cognitive || 'No definido'}</span>
+                        <span class="text-jtGold font-bold"><i class="fa-solid fa-shield mr-1"></i>${tool.safety || 'MFA'}</span>
+                    </div>
+                `;
+
+                if (tool.category === 'leer') colLeer.appendChild(card);
+                if (tool.category === 'hacer') colHacer.appendChild(card);
+                if (tool.category === 'compartir') colCompartir.appendChild(card);
+            });
+
+            // Actualizar contadores
+            document.getElementById('count-leer').innerText = counts.leer;
+            document.getElementById('count-hacer').innerText = counts.hacer;
+            document.getElementById('count-compartir').innerText = counts.compartir;
+
+            const totalTools = appState.myTools.length;
+            document.getElementById('toolCountLabel').innerText = `${totalTools} / 40`;
+            
+            // Barra de progreso (Meta de 30-40 herramientas)
+            const progressPct = Math.min((totalTools / 30) * 100, 100);
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = `${progressPct}%`;
+
+            const badge = document.getElementById('progressBadge');
+            if (totalTools >= 30) {
+                progressBar.className = "bg-jtGold h-full transition-all duration-300";
+                badge.className = "bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-2 rounded-lg text-xs font-semibold text-center";
+                badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1 text-emerald-600"></i> ¡Meta cumplida! Ecosistema robusto (${totalTools} herramientas).`;
+            } else {
+                progressBar.className = "bg-amber-400 h-full transition-all duration-300";
+                badge.className = "bg-amber-50 text-amber-700 border border-amber-200 px-3 py-2 rounded-lg text-xs font-medium text-center";
+                badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Requiere mínimo 30 herramientas para aprobar la rúbrica.`;
+            }
+
+            // Sincronizar catálogo visual rápido
+            PRELOADED_CATALOG.forEach(tool => {
+                const isSelected = appState.myTools.some(t => t.id === tool.id);
+                const btn = document.getElementById(`catalog-btn-${tool.id}`);
+                if (btn) {
+                    btn.className = isSelected 
+                    ? 'flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold transition-all shadow-sm bg-jtDark text-white border-jtDark' 
+                    : 'flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold transition-all shadow-sm bg-white text-slate-600 border-slate-200 hover:bg-slate-50';
+                }
+            });
+
+            // Si el mapa mental en vivo está activo, volverlo a renderizar
+            if (appState.activeView === 'mindmap') {
+                renderMindMap();
+            }
+        }
+
+        // CONTROL DE MODAL PARA CONFIGURAR FICHA DE LA HERRAMIENTA
+        function openToolModal(tool) {
+            appState.currentEditToolId = tool.id;
+            document.getElementById('modalToolName').innerText = tool.name;
+            document.getElementById('modalToolIcon').innerHTML = `<i class="${tool.icon}"></i>`;
+            document.getElementById('modalCategory').value = tool.category;
+            document.getElementById('modalPurpose').value = tool.purpose || 'Académico';
+            document.getElementById('modalFunction').value = tool.function || '';
+            document.getElementById('modalCognitive').value = tool.cognitive || '';
+            document.getElementById('modalLicense').value = tool.license || 'Creative Commons';
+            document.getElementById('modalSafety').value = tool.safety || 'Contraseña Segura';
+
+            document.getElementById('toolModal').classList.remove('hidden');
+        }
+
+        function closeToolModal() {
+            document.getElementById('toolModal').classList.add('hidden');
+            appState.currentEditToolId = null;
+        }
+
+        // ELIMINAR HERRAMIENTA DESDE EL MODAL
+        function deleteCurrentTool() {
+            if (appState.currentEditToolId) {
+                appState.myTools = appState.myTools.filter(t => t.id !== appState.currentEditToolId);
+                updateUI();
+                closeToolModal();
+            }
+        }
+
+        // GUARDAR METADATOS DE LA HERRAMIENTA CONFIGURADA
+        function saveToolMetadata() {
+            const tool = appState.myTools.find(t => t.id === appState.currentEditToolId);
+            if (tool) {
+                tool.category = document.getElementById('modalCategory').value;
+                tool.purpose = document.getElementById('modalPurpose').value;
+                tool.function = document.getElementById('modalFunction').value;
+                tool.cognitive = document.getElementById('modalCognitive').value;
+                tool.license = document.getElementById('modalLicense').value;
+                tool.safety = document.getElementById('modalSafety').value;
+
+                updateUI();
+                closeToolModal();
+            }
+        }
+
+        // CONTROL DE MODAL PARA AGREGAR HERRAMIENTA PERSONALIZADA
+        function openCustomToolModal() {
+            document.getElementById('customName').value = '';
+            // Forzar seleccion inicial del picker
+            selectCustomIcon(ICON_PICKER_OPTIONS[0]);
+            document.getElementById('customToolModal').classList.remove('hidden');
+        }
+
+        function closeCustomToolModal() {
+            document.getElementById('customToolModal').classList.add('hidden');
+        }
+
+        function addCustomTool() {
+            const name = document.getElementById('customName').value.trim();
+            const icon = document.getElementById('customIcon').value.trim();
+
+            if (name) {
+                const newId = 'custom_' + Date.now();
+                const newTool = {
+                    id: newId,
+                    name: name,
+                    category: 'leer',
+                    icon: icon || 'fa-solid fa-cubes',
+                    custom: true,
+                    purpose: 'Académico',
+                    function: '',
+                    cognitive: '',
+                    license: 'Creative Commons',
+                    safety: 'Contraseña Segura'
+                };
+
+                appState.customTools.push(newTool);
+                appState.myTools.push(newTool);
+                
+                initCatalog();
+                updateUI();
+                closeCustomToolModal();
+                openToolModal(newTool);
+            }
+        }
+
+        // CONTROLAR CONTADOR DE PALABRAS DE LA REFLEXIÓN
+        function checkReflectionWordCount() {
+            const text = document.getElementById('reflectionInput').value.trim();
+            appState.reflection = text;
+            
+            // Contar palabras de manera segura ante saltos o espacios dobles
+            const words = text ? text.split(/\s+/).length : 0;
+            const label = document.getElementById('wordCountLabel');
+            const warning = document.getElementById('wordCountWarning');
+
+            label.innerText = `Palabras: ${words} / 150`;
+
+            if (words > 150) {
+                label.className = "text-xs font-bold text-red-500";
+                warning.classList.remove('hidden');
+            } else {
+                label.className = "text-xs font-bold text-slate-500";
+                warning.classList.add('hidden');
+            }
+        }
+
+        // MOTOR DE DIBUJADO DE RED / MAPA MENTAL RADIAL (La gran adición de red)
+        function renderMindMap(isExport = false) {
+            const themeKey = document.getElementById('themeSelector').value;
+            const theme = THEMING_CONFIG[themeKey] || THEMING_CONFIG.classic;
+
+            const prefix = isExport ? 'exportMindMap' : 'mindMap';
+            const svgEl = document.getElementById(`${prefix}SVG`);
+            const nodesContainer = document.getElementById(`${prefix}Nodes`);
+            const containerEl = document.getElementById(isExport ? 'exportMindMapContainer' : 'mindMapCanvasContainer');
+
+            if (!containerEl) return;
+
+            // Obtener dimensiones reales del lienzo
+            const width = containerEl.clientWidth || (isExport ? 670 : 600);
+            const height = containerEl.clientHeight || (isExport ? 650 : 500);
+
+            // Reiniciar lienzos
+            svgEl.innerHTML = '';
+            nodesContainer.innerHTML = '';
+
+            const cx = width / 2;
+            const cy = height / 2;
+
+            // 1. DIBUJAR NODO CENTRAL (Estudiante / Docente)
+            const centralNode = document.createElement('div');
+            centralNode.className = "absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center rounded-full shadow-lg border-4 border-white transition-all z-20";
+            centralNode.style.width = "100px";
+            centralNode.style.height = "100px";
+            centralNode.style.left = `${cx}px`;
+            centralNode.style.top = `${cy}px`;
+            centralNode.style.backgroundColor = theme.center;
+            centralNode.innerHTML = `
+                <div class="text-white text-3xl mb-0.5"><i class="${AVATAR_MAP[appState.avatar]}"></i></div>
+                <div class="text-[9px] text-white font-bold uppercase tracking-wider text-center px-1 truncate w-full">
+                    ${appState.profile.name ? appState.profile.name.split(' ')[0] : 'Mi PLE'}
+                </div>
+            `;
+            nodesContainer.appendChild(centralNode);
+
+            // 2. CLASIFICAR HERRAMIENTAS POR DIMENSIONES
+            const grouped = { leer: [], hacer: [], compartir: [] };
+            appState.myTools.forEach(tool => {
+                if (grouped[tool.category]) {
+                    grouped[tool.category].push(tool);
+                }
+            });
+
+            // 3. ESTRUCTURAR RAMAS PRINCIPALES (Hacia dónde irradian en ángulos específicos)
+            const branchAngles = {
+                leer: 215 * Math.PI / 180,
+                hacer: 325 * Math.PI / 180,
+                compartir: 90 * Math.PI / 180
+            };
+
+            const branchRadius = Math.min(width, height) * 0.28; // Radio de órbita primaria de los nodos de categoría
+
+            const categoryMetadata = {
+                leer: { label: 'Leer / Acceder', icon: 'fa-solid fa-book-open', stroke: theme.leer.stroke, bg: theme.leer.bg, border: theme.leer.border, text: theme.leer.text },
+                hacer: { label: 'Hacer / Reflexionar', icon: 'fa-solid fa-pen-to-square', stroke: theme.hacer.stroke, bg: theme.hacer.bg, border: theme.hacer.border, text: theme.hacer.text },
+                compartir: { label: 'Compartir / PLN', icon: 'fa-solid fa-users', stroke: theme.compartir.stroke, bg: theme.compartir.bg, border: theme.compartir.border, text: theme.compartir.text }
+            };
+
+            // Dibujar cada rama principal y sus satélites
+            Object.keys(branchAngles).forEach(category => {
+                const angle = branchAngles[category];
+                const bx = cx + Math.cos(angle) * branchRadius;
+                const by = cy + Math.sin(angle) * branchRadius;
+
+                const meta = categoryMetadata[category];
+
+                // Dibujar línea desde el centro a la rama de categoría
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', `M ${cx} ${cy} Q ${(cx + bx)/2} ${(cy + by)/2 - 20}, ${bx} ${by}`);
+                path.setAttribute('stroke', meta.stroke);
+                path.setAttribute('stroke-width', '4');
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke-dasharray', '2,2');
+                svgEl.appendChild(path);
+
+                // Dibujar nodo de categoría principal
+                const catNode = document.createElement('div');
+                catNode.className = `absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 px-3 py-1.5 rounded-full border shadow font-bold text-xs uppercase tracking-wide z-10 transition-all ${meta.bg} ${meta.border} ${meta.text}`;
+                catNode.style.left = `${bx}px`;
+                catNode.style.top = `${by}px`;
+                catNode.innerHTML = `<i class="${meta.icon}"></i> <span>${meta.label}</span>`;
+                nodesContainer.appendChild(catNode);
+
+                // Dibujar herramientas satélite vinculadas a esta categoría
+                const tools = grouped[category];
+                const toolCount = tools.length;
+                if (toolCount === 0) return;
+
+                // Definimos el arco de dispersión de los nodos satélite alrededor del nodo de categoría
+                const dispersionAngle = Math.PI * 0.75; // 135 grados de dispersión
+                const startAngle = angle - dispersionAngle / 2;
+                const satRadius = Math.min(width, height) * 0.16; // Distancia de órbita secundaria desde el nodo de categoría
+
+                tools.forEach((tool, idx) => {
+                    const tAngle = startAngle + (toolCount > 1 ? (dispersionAngle * idx) / (toolCount - 1) : dispersionAngle / 2);
+                    const sx = bx + Math.cos(tAngle) * satRadius;
+                    const sy = by + Math.sin(tAngle) * satRadius;
+
+                    // Dibujar conexión elegante entre categoría y satélite
+                    const connection = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    connection.setAttribute('d', `M ${bx} ${by} L ${sx} ${sy}`);
+                    connection.setAttribute('stroke', meta.stroke);
+                    connection.setAttribute('stroke-width', '1.5');
+                    connection.setAttribute('fill', 'none');
+                    svgEl.appendChild(connection);
+
+                    // Crear nodo de herramienta satélite
+                    const satNode = document.createElement('div');
+                    satNode.className = `absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-1 px-2 py-1 rounded border shadow-sm text-[10px] font-semibold bg-white cursor-pointer transition-all hover:scale-105 hover:shadow-md border-slate-200 text-slate-700 max-w-[120px]`;
+                    satNode.style.left = `${sx}px`;
+                    satNode.style.top = `${sy}px`;
+                    satNode.onclick = () => openToolModal(tool);
+                    satNode.innerHTML = `
+                        <i class="${tool.icon} ${meta.text}"></i>
+                        <span class="truncate block">${tool.name}</span>
+                    `;
+                    nodesContainer.appendChild(satNode);
+                });
+            });
+        }
+
+        // RENDERIZAR REPORTE LISTO PARA EXPORTAR / IMPRIMIR (Refinado para calidad visual excepcional)
+        function renderPreview() {
+            // Cargar datos de portada
+            document.querySelectorAll('.preview-profile-name').forEach(el => el.innerText = appState.profile.name || '[Nombre Completo del Estudiante]');
+            document.querySelectorAll('.preview-profile-institution').forEach(el => el.innerText = appState.profile.institution || '[Institución]');
+            document.querySelectorAll('.preview-profile-program').forEach(el => el.innerText = appState.profile.program || '[Programa de Posgrado]');
+            document.querySelectorAll('.preview-profile-course').forEach(el => el.innerText = appState.profile.course || '[Asignatura]');
+
+            // Renderizar mapa de herramientas interactivo-estático en la página 2 de exportación
+            renderMindMap(true);
+
+            // Reflexión de entrega
+            const reflectionPreview = document.getElementById('preview-reflection-text');
+            reflectionPreview.innerText = appState.reflection || 'Debe redactar su justificación en la pestaña "Reflexión Crítica" para que aparezca aquí de manera automática.';
+        }
+    </script>
+</body>
+</html>
